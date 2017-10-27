@@ -15,7 +15,7 @@ public class MyList
 									.withValueSeparator(' ')
 									.create("list");
 		CommandLine cmd = null;
-		options.addOption( "type", true, "specify types of input: “i” for integer and “s” for string  " );
+		options.addOption( "type", true, "specify types of input: 'i' for integer and 's' for string  " );
 		options.addOption( "key", true, "value of the search key" );
 		options.addOption(listValues);
 		CommandLineParser parser = new DefaultParser();
@@ -28,28 +28,21 @@ public class MyList
 		}
 		if(cmd.hasOption("type") || cmd.hasOption("key") || cmd.hasOption("list"))
 		{
-			System.out.println("has options!!!");
 			String typeOfList = cmd.getOptionValue("type");
-			System.out.println(typeOfList);
 			String key = cmd.getOptionValue("key");
-			System.out.println(key);
 			String[] tempList = cmd.getOptionValues("list");
-			
-			
-			System.out.println("size of array is " + tempList.length);
-		    int j=0;
+			int j=0;
 		    boolean keyFound = false;
 		    //sets the lenght of the array aList
         	ArrayList<item> list = new ArrayList<item>(tempList.length);
  
-			/*
 			for (int i =0; i < tempList.length; i++)
         	{
         	  list.add(new item(tempList[i], i));
 			}
-			*/
+			
 			MyList sortObject = new MyList();
-			sortObject.sortArray(list, 0, list.size()-1);
+			sortObject.sortArray(list, 0, list.size()-1, typeOfList);
 			/*
 			for (int i =0; i < tempList.length; i++)
         	{
@@ -57,7 +50,7 @@ public class MyList
 			}
 			*/
 			//runs binary search on the list and returns true or false if not found it prints not found.
-	    	if(!binSearch(list, key))
+	    	if(!binSearch(list, key, typeOfList))
 	    	{
 	    		System.out.println("The key was not found!");
 	    	}      
@@ -68,50 +61,79 @@ public class MyList
         }
     }
 
-    public static boolean binSearch(ArrayList<item> list, String key)
+    public static boolean binSearch(ArrayList<item> list, String key, String type)
     {
         int upperBound = list.size()-1;
         int lowerBound = 0;
 		int iterator = (upperBound + lowerBound) / 2;
 		int compareValue = 0;
-	   //searches through the list for the key
-        while(((list.get(iterator).value.compareTo(key)) != 0)&&(lowerBound<upperBound))
-        {
-		  compareValue = list.get(iterator).value.compareTo(key);
-          if(compareValue > 0)
-          {
-            upperBound--;
-          }
-          else
-          {
-            lowerBound++;
-          }
-          iterator = (upperBound + lowerBound) / 2;
-        }
-	    //returns true and prints the index of the key or returns false
-        if((list.get(iterator).value.compareTo(key)) == 0)
-        {
-	      System.out.println(list.get(iterator).index);
-          return true;
-        }
-        else
-        {
-	      return false;
-        }
+		String s = "s";
+		if(type.equals(s))
+		{
+		//searches through the list for the key
+         while(((list.get(iterator).value.compareTo(key)) != 0)&&(lowerBound<upperBound))
+         {
+		   compareValue = list.get(iterator).value.compareTo(key);
+           if(compareValue > 0)
+           {
+             upperBound--;
+           }
+           else
+           {
+             lowerBound++;
+           }
+           iterator = (upperBound + lowerBound) / 2;
+         }
+	     //returns true and prints the index of the key or returns false
+         if((list.get(iterator).value.compareTo(key)) == 0)
+         {
+	       System.out.println(list.get(iterator).index);
+           return true;
+         }
+         else
+         {
+	       return false;
+         }
+	    }
+		else
+		{
+		 while((Double.parseDouble(list.get(iterator).value)!=Double.parseDouble(key))&&(lowerBound<upperBound))
+         {
+           if(Double.parseDouble(list.get(iterator).value)>Double.parseDouble(key))
+           {
+             upperBound--;
+           }
+           else
+           {
+             lowerBound++;
+           }
+           iterator = (upperBound + lowerBound) / 2;
+         }
+         //returns true and prints the index of the key or returns false
+         if(Double.parseDouble(list.get(iterator).value) == Double.parseDouble(key))
+         {
+           System.out.println(list.get(iterator).index);
+           return true;
+         }
+         else
+		 {
+		   return false;
+		 }
+		}
       }
 
-    public void sortArray(ArrayList<item> list, int leftBound, int rightBound)
+    public void sortArray(ArrayList<item> list, int leftBound, int rightBound, String type)
     {
         if(leftBound < rightBound)
         {
           int center = (leftBound + rightBound)/2;
-          sortArray(list, leftBound, center);
-          sortArray(list, center+1, rightBound);
-          merge(list, leftBound,center,rightBound);
+          sortArray(list, leftBound, center, type);
+          sortArray(list, center+1, rightBound, type);
+          merge(list, leftBound,center,rightBound, type);
         }
     }
 
-    public void merge(ArrayList<item> list, int leftBound,int center, int rightBound)
+    public void merge(ArrayList<item> list, int leftBound,int center, int rightBound, String type)
     {
         int leftSize = center - leftBound + 1;
         int rightSize = rightBound - center;
@@ -130,7 +152,8 @@ public class MyList
         }
         //go through and merge the two arrays in order back into main array
         int i =0, j=0, k= leftBound, compareValue=0;
-		if(isAString(leftList.get(0).value))
+		String s = "s";
+		if(type.equals(s))
 		{
 			while(i < leftSize && j < rightSize)
 			{
@@ -219,5 +242,3 @@ class item{
 		this.index=index;
 	}
 }
-
-//tag practice
