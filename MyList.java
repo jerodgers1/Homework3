@@ -1,69 +1,66 @@
+package com.group1.HW3;
+
 import java.io.*;
 import java.util.*;
 import java.lang.*;
-
+import org.apache.commons.cli.*;
 public class MyList
 {
     public static void main(String[] args)
     {
-		/*
-		CommandLineParser parser = new DefaultPaser();
+		Options options = new Options();
+		Option listValues = OptionBuilder.withArgName( "list")
+									.hasArgs(Option.UNLIMITED_VALUES)
+									.withDescription("sorted list of integers or strings" )
+									.withValueSeparator(' ')
+									.create("list");
+		CommandLine cmd = null;
+		options.addOption( "type", true, "specify types of input: “i” for integer and “s” for string  " );
+		options.addOption( "key", true, "value of the search key" );
+		options.addOption(listValues);
+		CommandLineParser parser = new DefaultParser();
 		try{
-			CommsandLine cmd = parser.parse(options, args);
+			 cmd = parser.parse(options, args);
 		}
 		catch(ParseException exp)
 		{
 			System.out.println(exp);
 		}
-				
 		if(cmd.hasOption("type") || cmd.hasOption("key") || cmd.hasOption("list"))
 		{
 			System.out.println("has options!!!");
-			String tempOption = cmd.getOptionValue("type");
-			System.out.println(tempOption);
-			tempOption = cmd.getOptionValue("key");
-			System.out.println(tempOption);
-			tempOption = cmd.getOptionValue("list");
-			System.out.println(tempOption);
-		}
-		*/
-	     //if there is no command line args the program will return -1
-	     if(args.length!=0)
-	      {
-		       String key = "";
-		        int j=0;
-		        boolean keyFound = false;
-		        //sets the lenght of the array aList
-        		ArrayList<item> list = new ArrayList<item>(args.length);
-        		//creates a buffer to read the key from user input
-        		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        		try{
-              //reads the key
-        			key = reader.readLine();//Double.parseDouble(reader.readLine());
-        		}
-        		catch(IOException err)
-        		{
-        			System.out.println(err);
-        		}
-				
-				for (int i =0; i < args.length; i++)
-        		{
-        		  list.add(new item(args[i], i));
-				}
-			     		
-				MyList sortObject = new MyList();
-				sortObject.sortArray(list, 0, list.size()-1);
-				/*
-				for (int i =0; i < args.length; i++)
-        		{
-        		  System.out.println("testing " + list.get(i).index + " " + list.get(i).value);
-				}
-				*/
-				//runs binary search on the list and returns true or false if not found it prints not found.
-	    		if(!binSearch(list, key))
-	    		{
-	    			System.out.println("The key was not found!");
-	    		}      
+			String typeOfList = cmd.getOptionValue("type");
+			System.out.println(typeOfList);
+			String key = cmd.getOptionValue("key");
+			System.out.println(key);
+			String[] tempList = cmd.getOptionValues("list");
+			
+			
+			System.out.println("size of array is " + tempList.length);
+		    int j=0;
+		    boolean keyFound = false;
+		    //sets the lenght of the array aList
+        	ArrayList<item> list = new ArrayList<item>(tempList.length);
+ 
+			/*
+			for (int i =0; i < tempList.length; i++)
+        	{
+        	  list.add(new item(tempList[i], i));
+			}
+			*/
+			MyList sortObject = new MyList();
+			sortObject.sortArray(list, 0, list.size()-1);
+			/*
+			for (int i =0; i < tempList.length; i++)
+        	{
+        	  System.out.println("testing " + list.get(i).index + " " + list.get(i).value);
+			}
+			*/
+			//runs binary search on the list and returns true or false if not found it prints not found.
+	    	if(!binSearch(list, key))
+	    	{
+	    		System.out.println("The key was not found!");
+	    	}      
       	}
       	else
       	{
@@ -77,7 +74,7 @@ public class MyList
         int lowerBound = 0;
 		int iterator = (upperBound + lowerBound) / 2;
 		int compareValue = 0;
-        //searches through the list for the key
+	   //searches through the list for the key
         while(((list.get(iterator).value.compareTo(key)) != 0)&&(lowerBound<upperBound))
         {
 		  compareValue = list.get(iterator).value.compareTo(key);
@@ -91,15 +88,15 @@ public class MyList
           }
           iterator = (upperBound + lowerBound) / 2;
         }
-        //returns true and prints the index of the key or returns false
+	    //returns true and prints the index of the key or returns false
         if((list.get(iterator).value.compareTo(key)) == 0)
         {
-          System.out.println(list.get(iterator).index);
+	      System.out.println(list.get(iterator).index);
           return true;
         }
         else
         {
-          return false;
+	      return false;
         }
       }
 
